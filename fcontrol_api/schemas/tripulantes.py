@@ -1,0 +1,47 @@
+from datetime import date
+from typing import Literal
+
+from pydantic import BaseModel, ConfigDict, Field
+
+from fcontrol_api.schemas.funcoes import FuncPublic
+from fcontrol_api.schemas.users import UserPublic
+
+uaes = Literal['11gt']
+
+
+class BaseTrip(BaseModel):
+    trig: str = Field(min_length=3, max_length=3)
+    active: bool = True
+
+
+class TripSchema(BaseTrip):
+    user_id: int
+    uae: uaes
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TripBasicInfo(BaseModel):
+    id: int
+    trig: str = Field(min_length=3, max_length=3)
+    uae: uaes
+    active: bool
+    user: UserPublic
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TripWithFuncs(TripBasicInfo):
+    funcs: list[FuncPublic]
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TripSearchResult(BaseModel):
+    id: int
+    trig: str
+    p_g: str
+    nome_guerra: str
+    oper: str
+    posto_ant: int
+    ult_promo: date | None
+    ant_rel: int | None
+    id_fab: int | None
+    model_config = ConfigDict(from_attributes=True)
